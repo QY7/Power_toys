@@ -26,4 +26,3 @@ plt.plot(fs,eff)
 plt.figure()
 plt.plot(fs,temp)
 plt.show()
-
