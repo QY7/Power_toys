@@ -1,0 +1,170 @@
+{
+    "materials": {
+        "ferrite_loss": {
+            "CoordinateSystemType": "Cartesian",
+            "BulkOrSurfaceType": 1,
+            "PhysicsTypes": {
+                "set": [
+                    "Electromagnetic",
+                    "Thermal",
+                    "Structural"
+                ]
+            },
+            "AttachedData": {
+                "CoefficientSetupData": {
+                    "property_data": "coreloss_data",
+                    "coefficient_setup": "w_per_cubic_meter",
+                    "Frequency": "60Hz",
+                    "Thickness": "0mm",
+                    "Conductivity": "0",
+                    "Coordinates": {
+                        "DimUnits": [
+                            "",
+                            ""
+                        ]
+                    }
+                },
+                "CoreLossMultiCurveData": {
+                    "property_data": "coreloss_multi_curve_data",
+                    "coreloss_unit": "kw_per_cubic_meter",
+                    "AllCurves": {
+                        "OneCurve": [
+                            {
+                                "Frequency": "700kHz",
+                                "Coordinates": {
+                                    "DimUnits": [
+                                        "",
+                                        ""
+                                    ],
+                                    "Points": [
+                                        0.0,
+                                        0.0,
+                                        0.023894,
+                                        10.0,
+                                        0.0300162,
+                                        18.1393,
+                                        0.0333153,
+                                        25.9294,
+                                        0.0394672,
+                                        46.2407,
+                                        0.0452561,
+                                        70.7544,
+                                        0.0499039,
+                                        101.141,
+                                        0.0598947,
+                                        171.392,
+                                        0.0695809,
+                                        266.752,
+                                        0.0797867,
+                                        415.171,
+                                        0.0897179,
+                                        614.013,
+                                        0.10023,
+                                        877.707
+                                    ]
+                                }
+                            },
+                            {
+                                "Frequency": "1MHz",
+                                "Coordinates": {
+                                    "DimUnits": [
+                                        "",
+                                        ""
+                                    ],
+                                    "Points": [
+                                        0.0,
+                                        0.0,
+                                        0.018291,
+                                        10.0,
+                                        0.0277581,
+                                        30.2201,
+                                        0.036977,
+                                        67.2336,
+                                        0.0473686,
+                                        135.065,
+                                        0.0598947,
+                                        271.33,
+                                        0.0622833,
+                                        300.492,
+                                        0.063513,
+                                        321.654,
+                                        0.0664778,
+                                        362.338,
+                                        0.0723557,
+                                        467.682,
+                                        0.0787534,
+                                        603.654,
+                                        0.0846067,
+                                        753.091,
+                                        0.090895,
+                                        939.521,
+                                        0.10023,
+                                        1254.65
+                                    ]
+                                }
+                            },
+                            {
+                                "Frequency": "1.5MHz",
+                                "Coordinates": {
+                                    "DimUnits": [
+                                        "",
+                                        ""
+                                    ],
+                                    "Points": [
+                                        0.0,
+                                        0.0,
+                                        0.0132906,
+                                        10.1716,
+                                        0.017249,
+                                        20.0889,
+                                        0.0240502,
+                                        47.0342,
+                                        0.0300162,
+                                        82.4624,
+                                        0.0389561,
+                                        168.5,
+                                        0.0518941,
+                                        374.879,
+                                        0.0626905,
+                                        657.255,
+                                        0.0757332,
+                                        1152.33,
+                                        0.0897179,
+                                        1986.23,
+                                        0.0995788,
+                                        2697.95
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
+                "MatAppearanceData": {
+                    "property_data": "appearance_data",
+                    "Red": 89,
+                    "Green": 94,
+                    "Blue": 107
+                }
+            },
+            "permittivity": "30000",
+            "permeability": "1000",
+            "conductivity": "1.2",
+            "dielectric_loss_tangent": "0.2",
+            "magnetic_loss_tangent": "0.035",
+            "thermal_conductivity": "4",
+            "core_loss_type": {
+                "property_type": "ChoiceProperty",
+                "Choice": "Power Ferrite"
+            },
+            "core_loss_cm": "0.0252112574725953",
+            "core_loss_x": "1.76185161242538",
+            "core_loss_y": "2.86628438028728",
+            "core_loss_kdc": "0",
+            "mass_density": "4600",
+            "specific_heat": "750",
+            "youngs_modulus": "119000000000",
+            "thermal_expansion_coefficient": "1e-05",
+            "core_loss_equiv_cut_depth": "0"
+        }
+    }
+}

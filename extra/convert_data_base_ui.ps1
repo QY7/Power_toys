@@ -1,0 +1,1 @@
+pyuic5 -o ./power_toys/gui/ui/ui_mosfet_database_gui.py ./power_toys/gui/ui/mosfet_database_gui.ui

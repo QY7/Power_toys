@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>502</width>
+    <height>314</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLineEdit{
+border-radius:2px;
+font-family:Arial;
+}
+QLabel{
+font-family:Arial;
+}
+QComboBox{
+font-family:Arial;
+}
+QPushButton{
+background:	white;
+font-weight:bold;
+border-radius:4px;
+font-family:Arial;
+color:#FFFFFF;
+background:	#AAAAAA;
+}
+QPushButton:hover{
+background:	#DD6666;
+color:#FFFFFF;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="4" column="0">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="param1_value"/>
+      </item>
+      <item row="0" column="7">
+       <widget class="QLineEdit" name="param2_value"/>
+      </item>
+      <item row="1" column="6">
+       <widget class="QComboBox" name="param4_condition">
+        <item>
+         <property name="text">
+          <string>=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;=</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLineEdit" name="param4_value"/>
+      </item>
+      <item row="0" column="4">
+       <widget class="QComboBox" name="logic1">
+        <item>
+         <property name="text">
+          <string>AND</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>NOT</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QComboBox" name="logic3">
+        <item>
+         <property name="text">
+          <string>AND</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>NOT</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QComboBox" name="logic2">
+        <item>
+         <property name="text">
+          <string>AND</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OR</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>NOT</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="param1_select">
+        <item>
+         <property name="text">
+          <string>id</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>vbr</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>rdson</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>qg</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="param3_select">
+        <item>
+         <property name="text">
+          <string>id</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>vbr</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>rdson</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>qg</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QComboBox" name="param2_select">
+        <item>
+         <property name="text">
+          <string>vbr</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>rdson</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>qg</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QComboBox" name="param2_condition">
+        <item>
+         <property name="text">
+          <string>=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;=</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QComboBox" name="param4_select">
+        <item>
+         <property name="text">
+          <string>vbr</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>rdson</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>qg</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QComboBox" name="param1_condition">
+        <item>
+         <property name="text">
+          <string>=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>like</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="param3_condition">
+        <item>
+         <property name="text">
+          <string>=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&lt;=</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>&gt;=</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="param3_value"/>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Qrr(nC)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="3">
+         <widget class="QLineEdit" name="vgs_min">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3">
+         <widget class="QLineEdit" name="cosst">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Qg(nC)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Qg_soft(nC)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="4">
+         <widget class="QLabel" name="label_22">
+          <property name="text">
+           <string>NFoMoss(pF*mR)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="5">
+         <widget class="QLineEdit" name="ktemp">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="qrr">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="cosse">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="vgs">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="4">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>ktemp</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
+         <widget class="QLineEdit" name="rg">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>kdyn</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="3">
+         <widget class="QLineEdit" name="NFoM">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="footprint">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="5">
+         <widget class="QLineEdit" name="NFoMoss">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>vgs_max</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Vgsth</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QLineEdit" name="rdson">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_23">
+          <property name="text">
+           <string>FoM(nC*mR)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Rg(R)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="2">
+         <widget class="QLabel" name="label_21">
+          <property name="text">
+           <string>NFoM(pF*mR)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>id</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>footprint</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Cosse(pF)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="5">
+         <widget class="QLineEdit" name="qgs2">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="vbr">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QLineEdit" name="qgd">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="4">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Vplateau</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="4">
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>Qgs2(nC)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="3">
+         <widget class="QLineEdit" name="kdyn">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="qg">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="FoM">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Vbr</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="5">
+         <widget class="QLineEdit" name="vplateau">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QLineEdit" name="qg_soft">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLineEdit" name="vgsth">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>Cosst(pF)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>vgs_min</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Qgd(nC)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Rdson(mR)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="id">
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Copy Id</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Filter</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Save</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>502</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>id</tabstop>
+  <tabstop>footprint</tabstop>
+  <tabstop>rdson</tabstop>
+  <tabstop>vbr</tabstop>
+  <tabstop>vgsth</tabstop>
+  <tabstop>rg</tabstop>
+  <tabstop>qg</tabstop>
+  <tabstop>qgd</tabstop>
+  <tabstop>qg_soft</tabstop>
+  <tabstop>cosse</tabstop>
+  <tabstop>cosst</tabstop>
+  <tabstop>vplateau</tabstop>
+  <tabstop>qrr</tabstop>
+  <tabstop>kdyn</tabstop>
+  <tabstop>ktemp</tabstop>
+  <tabstop>vgs</tabstop>
+  <tabstop>vgs_min</tabstop>
+  <tabstop>qgs2</tabstop>
+  <tabstop>FoM</tabstop>
+  <tabstop>NFoM</tabstop>
+  <tabstop>NFoMoss</tabstop>
+  <tabstop>param1_select</tabstop>
+  <tabstop>param1_condition</tabstop>
+  <tabstop>param1_value</tabstop>
+  <tabstop>logic1</tabstop>
+  <tabstop>param2_select</tabstop>
+  <tabstop>param2_condition</tabstop>
+  <tabstop>param2_value</tabstop>
+  <tabstop>logic2</tabstop>
+  <tabstop>param3_select</tabstop>
+  <tabstop>param3_condition</tabstop>
+  <tabstop>param3_value</tabstop>
+  <tabstop>logic3</tabstop>
+  <tabstop>param4_select</tabstop>
+  <tabstop>param4_condition</tabstop>
+  <tabstop>param4_value</tabstop>
+  <tabstop>pushButton_3</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>pushButton_2</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>save()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>491</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>id</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>186</x>
+     <y>108</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_by_condition()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>276</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>390</x>
+     <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>copy_id()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>186</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>update_density()</slot>
+  <slot>save()</slot>
+  <slot>load()</slot>
+  <slot>update_db()</slot>
+  <slot>check_id()</slot>
+  <slot>load_by_condition()</slot>
+  <slot>copy_id()</slot>
+  <slot>print_inline()</slot>
+ </slots>
+</ui>
