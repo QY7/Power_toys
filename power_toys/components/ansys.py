@@ -38,7 +38,7 @@ class Ansys():
         return w_outer
     
     @classmethod
-    def create_strip_face(cls,m3d:Maxwell3d,position = ['0mm','0mm','0mm'],r='0mm',k='0mm',name = None):
+    def create_strip_face(cls,m3d:Maxwell3d,position = ['0mm','0mm','0mm'],r='0mm',k='0mm',along='X',name = None):
         """产生strip的surface
 
         Args:
@@ -52,9 +52,14 @@ class Ansys():
             str: 返回名字
         """
         x,y,z = position[:]
-        c1 = m3d.modeler.create_circle('XY',position,r,name=name)
-        c2 = m3d.modeler.create_circle('XY',[f"{x}+{k}*{r}",y,z],r)
-        rect1 = m3d.modeler.create_rectangle('XY',[x,f"{y}-{r}",z],dimension_list=[f"{k}*{r}",f"2*{r}"])
+        if(along=='X'):
+            c1 = m3d.modeler.create_circle('XY',position,r,name=name)
+            c2 = m3d.modeler.create_circle('XY',[f"{x}+{k}*{r}",y,z],r)
+            rect1 = m3d.modeler.create_rectangle('XY',[x,f"{y}-{r}",z],dimension_list=[f"{k}*{r}",f"2*{r}"])
+        else:
+            c1 = m3d.modeler.create_circle('XY',position,r,name=name)
+            c2 = m3d.modeler.create_circle('XY',[x,f"{y}+{k}*{r}",z],r)
+            rect1 = m3d.modeler.create_rectangle('XY',[f"{x}-{r}",y,z],dimension_list=[f"2*{r}",f"{k}*{r}"])
         return m3d.modeler.unite([c1,c2,rect1],keep_originals=False)
 
     @classmethod
@@ -67,6 +72,7 @@ class Ansys():
                      matname='ferrite',
                      name='leg',
                      csplane = 'XY',
+                     along = 'X',
                      create_cross = False
                     ):
         """生成strip的实体
@@ -86,9 +92,15 @@ class Ansys():
             str: 生成的strip的名字
         """
         x,y,z = position[:]
-        cylinder1 = m3d.modeler.create_cylinder(csplane,position=position, radius= r,height=height,name=name,matname = matname)
-        cylinder2 = m3d.modeler.create_cylinder(csplane,position=[f"({x}) + ({k}) * ({r})" , y , z], radius= r,height=height,matname  =matname)
-        box = m3d.modeler.create_box([x,f"({y})-({r})",z],dimensions_list=[f"({k})*({r})",f"2*({r})",height],matname = matname)
+        if(along == 'X'):
+            cylinder1 = m3d.modeler.create_cylinder(csplane,position=position, radius= r,height=height,name=name,matname = matname)
+            cylinder2 = m3d.modeler.create_cylinder(csplane,position=[f"({x}) + ({k}) * ({r})" , y , z], radius= r,height=height,matname  =matname)
+            box = m3d.modeler.create_box([x,f"({y})-({r})",z],dimensions_list=[f"({k})*({r})",f"2*({r})",height],matname = matname)
+        else:
+            cylinder1 = m3d.modeler.create_cylinder(csplane,position=position, radius= r,height=height,name=name,matname = matname)
+            cylinder2 = m3d.modeler.create_cylinder(csplane,position=[x , f"{y}+({k}) * ({r})" , z], radius= r,height=height,matname  =matname)
+            box = m3d.modeler.create_box([f"({x})-({r})",y,z],dimensions_list=[f"2*({r})",f"({k})*({r})",height],matname = matname)
+            
         unite_leg = m3d.modeler.unite([cylinder1,cylinder2,box])
         if(create_cross):
             cls.create_strip_face(m3d,[x,y,f"{z}+{height}/2"],r,k,f"{name}_cross")
@@ -102,6 +114,7 @@ class Ansys():
                        k='0mm',
                        w='0mm',
                        height = '0mm',
+                       along='X',
                        cover_winding = False,
                        name = None,
                        matname = 'ferrite'
@@ -120,10 +133,16 @@ class Ansys():
         """
         if(cover_winding):
             x,y,z = position[:]
-            m3d.modeler.create_box([f"{x}-({w})",y,z],dimensions_list=[f"2*{r}+({k})*({r})+2*({w})",f"4*{r}+2*{w}",height],name=name,matname=matname)
+            if(along == 'X'):
+                m3d.modeler.create_box([f"{x}-({w})",y,z],dimensions_list=[f"2*{r}+({k})*({r})+2*({w})",f"4*{r}+2*{w}",height],name=name,matname=matname)
+            else:
+                m3d.modeler.create_box([x,f"{y}-({w})",z],dimensions_list=[f"4*{r}+2*{w}",f"2*{r}+({k})*({r})+2*({w})",height],name=name,matname=matname)
         else:
-            m3d.modeler.create_box(position,dimensions_list=[f"2*{r}+({k})*({r})",f"4*{r}+2*{w}",height],name=name,matname=matname)
-    
+            if(along == 'X'):
+                m3d.modeler.create_box(position,dimensions_list=[f"2*{r}+({k})*({r})",f"4*{r}+2*{w}",height],name=name,matname=matname)
+            else:
+                m3d.modeler.create_box(position,dimensions_list=[f"4*{r}+2*{w}",f"2*{r}+({k})*({r})",height],name=name,matname=matname)
+                
     @classmethod
     def init_setup(cls,m3d:Maxwell3d,fs = 1e6):
         """初始化m3d的Setup
