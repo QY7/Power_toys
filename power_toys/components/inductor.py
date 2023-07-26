@@ -6,6 +6,7 @@ from scipy.interpolate import griddata
 import torch
 import torch.nn as nn
 import joblib
+from .BaseComponent import BaseComponent
 
 class Net(nn.Module):
     def __init__(self):
@@ -20,7 +21,7 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
     
-class Inductor():
+class Inductor(BaseComponent):
     def __init__(self,id) -> None:
         self.id = id
         self.load_loss_model()
@@ -28,9 +29,6 @@ class Inductor():
         self.dc_loss = 0
         self.ac_loss = 0
         self.temp = 0
-        self.idc_prev = 0
-        self.iac_prev = 0
-        self.freq_prev = 0
 
     def series_connect(self,N):
         self.N_series = N
@@ -247,6 +245,27 @@ class Inductor():
         xyz_out = y_scaler.inverse_transform(outputs.detach().numpy())[0]
         return xyz_out
     
+    @property
+    def loss_dc(self):
+        idc = self.circuit_param('iave')
+        iac = self.circuit_param('iripple')
+        fs = self.circuit_param('fs')
+        return self.predict_AI(idc,iac,fs)[0]
+
+    @property
+    def loss_ac(self):
+        idc = self.circuit_param('iave')
+        iac = self.circuit_param('iripple')
+        fs = self.circuit_param('fs')
+        return self.predict_AI(idc,iac,fs)[1]
+
+    @property
+    def temperature(self):
+        idc = self.circuit_param('iave')
+        iac = self.circuit_param('iripple')
+        fs = self.circuit_param('feq')
+        return self.predict_AI(idc,iac,fs)[2]
+
     def __str__(self) -> str:
         return f"Inductor: {self.id} with inductance: {self.inductance}, DCR: {self.dcr}, dimensions: {self.length}mm *{self.width}mm *{self.height}mm."
 

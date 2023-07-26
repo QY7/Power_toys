@@ -1,0 +1,2 @@
+class BUCK_COMPONENT(object):
+    (ACTIVE_MOS,PASSIVE_MOS,INDUCTOR) = range(0,3)

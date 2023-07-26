@@ -11,11 +11,12 @@ from sqlalchemy import Column, Integer, String,Float
 from ..data.database import component_session,component_engine
 import pandas as pd
 from sqlalchemy.sql import select, text
-
+from ..components.BaseComponent import BaseComponent
+from ..common.const import *
 
 Base = declarative_base()
 
-class MOSFET(Base):
+class MOSFET(Base,BaseComponent):
     __tablename__ = 'MOSFET'
     id      = Column(String, primary_key=True)
     rdson   = Column(Float)
@@ -156,7 +157,7 @@ class MOSFET(Base):
             if(int(v)>=vds):
                 return FoM[kind][v][vgs]
             
-    def con_loss(self,irms):
+    def __con_loss(self,irms):
         """返回导通损耗
 
         Args:
@@ -166,8 +167,13 @@ class MOSFET(Base):
             return self.rdson*self.kdyn*self.ktemp*irms**2
         except TypeError:
             log_error("con_loss参数不完整，请检查mos参数")
+    
+    @property
+    def con_loss(self):
+        irms = self.circuit_param('irms')
+        return self.__con_loss(irms)
 
-    def dri_loss(self,fs):
+    def __dri_loss(self,fs):
         """计算驱动损耗
 
         Args:
@@ -177,7 +183,12 @@ class MOSFET(Base):
         """
         return self.qg*(self.vgs-self.vgs_min)*fs
 
-    def switch_off_loss(self,fs,vds,ids,rgo=0.6):
+    @property
+    def dri_loss(self):
+        fs = self.circuit_param('fs')
+        return self.__dri_loss(fs=fs)
+    
+    def __switch_off_loss(self,fs,vds,ids,rgo=0.6):
         """计算一个桥臂的关断损耗，采用分段线性模型进行计算
 
         Args:
@@ -198,7 +209,14 @@ class MOSFET(Base):
         except TypeError:
             log_error("off_loss参数不完整，请检查mos参数")
 
-    def switch_on_loss(self,fs,vds,ids,rgo = 1):
+    @property
+    def switch_off_loss(self):
+        fs = self.circuit_param('fs')
+        vds = self.circuit_param('off_voltage')
+        ids = self.circuit_param('off_current')
+        return self.__switch_off_loss(fs,vds,ids)
+
+    def __switch_on_loss(self,fs,vds,ids,rgo = 1):
         """计算一个桥臂的开通损耗，采用分段线性模型进行计算
 
         Args:
@@ -217,8 +235,15 @@ class MOSFET(Base):
             return loss*fs
         except TypeError:
             log_error("switch_on_loss参数不完整，请检查mos参数")
+    
+    @property
+    def switch_on_loss(self):
+        fs = self.circuit_param('fs')
+        vds = self.circuit_param('on_voltage')
+        ids = self.circuit_param('on_current')
+        return self.__switch_on_loss(fs,vds,ids)
 
-    def qrr_loss(self,fs,vds):
+    def __qrr_loss(self,fs,vds):
         """反向恢复损耗计算，计算模型直接以qrr*Vds*fs来考虑
 
         Args:
@@ -233,8 +258,14 @@ class MOSFET(Base):
             return self.qrr*fs*vds
         except TypeError:
             log_error("qrr_loss参数不完整，请检查mos参数")
+        
+    @property
+    def qrr_loss(self):
+        fs = self.circuit_param('fs')
+        vds = self.circuit_param('qrr_voltage')
+        return self.__qrr_loss(fs=fs,vds=vds)
 
-    def cap_loss(self,fs,vds):
+    def __cap_loss(self,fs,vds):
         """反向恢复损耗计算，计算模型直接以qrr*Vds*fs来考虑
 
         Args:
@@ -249,6 +280,12 @@ class MOSFET(Base):
             return 0.5*self.cosse*fs*np.power(vds,2)
         except TypeError:
             log_error("cap_loss参数不完整，请检查mos参数")
+            
+    @property
+    def cap_loss(self):
+        fs = self.circuit_param('fs')
+        vds = self.circuit_param('cap_voltage')
+        return self.__cap_loss(fs=fs,vds=vds)
     
     def __str__(self) -> str:
         value_list = []
