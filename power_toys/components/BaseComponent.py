@@ -1,4 +1,7 @@
 class BaseComponent():
+    """
+    所有component的基类，具备通用的属性和方法，通过继承这个类来继承属性
+    """
     def __init__(self) -> None:
         pass
 
@@ -16,3 +19,11 @@ class BaseComponent():
     @circuit_idx.setter
     def circuit_idx(self,val):
         self._circuit_idx = val
+    
+    @property
+    def area(self):
+        return self.width*self.length
+    
+    @property
+    def volume(self):
+        return self.area*self.height

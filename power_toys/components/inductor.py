@@ -25,7 +25,6 @@ class Inductor(BaseComponent):
     def __init__(self,id) -> None:
         self.id = id
         self.load_loss_model()
-        self.N_series = 1
         self.dc_loss = 0
         self.ac_loss = 0
         self.temp = 0
@@ -59,19 +58,11 @@ class Inductor(BaseComponent):
     
     @property
     def width(self):
-        return self.model['Width']
+        return self.model['Width']*self.N_series
     
     @property
     def height(self):
         return self.model['Height']
-    
-    @property
-    def volume(self):
-        return self.length*self.width*self.height*self.N_series
-
-    @property
-    def footprint(self):
-        return self.length*self.width*self.N_series
     
     @property
     def dcr(self):
