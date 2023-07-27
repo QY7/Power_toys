@@ -1,6 +1,5 @@
 *.pyc
 build
 *.egg-info
-component.db
 power_toys/config.json
 *.xlsx
