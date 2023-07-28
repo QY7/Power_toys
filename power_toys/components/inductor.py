@@ -28,6 +28,7 @@ class Inductor(BaseComponent):
         self.dc_loss = 0
         self.ac_loss = 0
         self.temp = 0
+        self.N_series = 1
 
     def series_connect(self,N):
         self.N_series = N
