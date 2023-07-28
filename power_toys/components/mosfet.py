@@ -157,7 +157,7 @@ class MOSFET(Base,BaseComponent):
             if(int(v)>=vds):
                 return FoM[kind][v][vgs]
             
-    def __con_loss(self,irms):
+    def _con_loss(self,irms):
         """返回导通损耗
 
         Args:
@@ -171,9 +171,9 @@ class MOSFET(Base,BaseComponent):
     @property
     def con_loss(self):
         irms = self.circuit_param('irms')
-        return self.__con_loss(irms)
+        return self._con_loss(irms)
 
-    def __dri_loss(self,fs):
+    def _dri_loss(self,fs):
         """计算驱动损耗
 
         Args:
@@ -186,9 +186,9 @@ class MOSFET(Base,BaseComponent):
     @property
     def dri_loss(self):
         fs = self.circuit_param('fs')
-        return self.__dri_loss(fs=fs)
+        return self._dri_loss(fs=fs)
     
-    def __switch_off_loss(self,fs,vds,ids,rgo=0.6):
+    def _switch_off_loss(self,fs,vds,ids,rgo=0.6):
         """计算一个桥臂的关断损耗，采用分段线性模型进行计算
 
         Args:
@@ -214,9 +214,9 @@ class MOSFET(Base,BaseComponent):
         fs = self.circuit_param('fs')
         vds = self.circuit_param('off_voltage')
         ids = self.circuit_param('off_current')
-        return self.__switch_off_loss(fs,vds,ids)
+        return self._switch_off_loss(fs,vds,ids)
 
-    def __switch_on_loss(self,fs,vds,ids,rgo = 1):
+    def _switch_on_loss(self,fs,vds,ids,rgo = 1):
         """计算一个桥臂的开通损耗，采用分段线性模型进行计算
 
         Args:
@@ -241,9 +241,9 @@ class MOSFET(Base,BaseComponent):
         fs = self.circuit_param('fs')
         vds = self.circuit_param('on_voltage')
         ids = self.circuit_param('on_current')
-        return self.__switch_on_loss(fs,vds,ids)
+        return self._switch_on_loss(fs,vds,ids)
 
-    def __qrr_loss(self,fs,vds):
+    def _qrr_loss(self,fs,vds):
         """反向恢复损耗计算，计算模型直接以qrr*Vds*fs来考虑
 
         Args:
@@ -263,9 +263,9 @@ class MOSFET(Base,BaseComponent):
     def qrr_loss(self):
         fs = self.circuit_param('fs')
         vds = self.circuit_param('qrr_voltage')
-        return self.__qrr_loss(fs=fs,vds=vds)
+        return self._qrr_loss(fs=fs,vds=vds)
 
-    def __cap_loss(self,fs,vds):
+    def _cap_loss(self,fs,vds):
         """反向恢复损耗计算，计算模型直接以qrr*Vds*fs来考虑
 
         Args:
@@ -285,7 +285,7 @@ class MOSFET(Base,BaseComponent):
     def cap_loss(self):
         fs = self.circuit_param('fs')
         vds = self.circuit_param('cap_voltage')
-        return self.__cap_loss(fs=fs,vds=vds)
+        return self._cap_loss(fs=fs,vds=vds)
     
     def __str__(self) -> str:
         value_list = []
