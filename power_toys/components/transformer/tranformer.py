@@ -1,9 +1,10 @@
 import  numpy as np
 import pyaedt
 from pyaedt.maxwell import Maxwell3d
-from ..components.ansys import Ansys
+from ..ansys import Ansys
+from ..Base import BaseComponent
 
-class Transformer():
+class Transformer(BaseComponent):
     rho_cu = 17.2*1e-9
     # 使用3oz的铜
     oz_unit=35*1e-6
@@ -27,6 +28,7 @@ class Transformer():
             k (float): 磁芯主子的长边/圆弧半径
             Noz (float, optional): 单层的PCB厚度. Defaults to 3.
         """
+        super().__init__()
         self.m3d = None
         self.r = r
         self.w = w
@@ -39,6 +41,10 @@ class Transformer():
         # 默认的height_plate使用Ae来算
         self.height_plate = self.Ae/self.length_plate
 
+    @property
+    def loss_list(self):
+        return ['winding_loss','core_loss']
+    
     @classmethod
     def load_from_prj(cls,project_name,design_name,desktop_version = '2022.1'):
         m3d = Ansys.connect_to_proj(project_name,design_name,desktop_version=desktop_version)

@@ -2,13 +2,13 @@ from ..gui.ui.ui_loss_analysis_gui import Ui_MainWindow
 import  sys
 from PyQt5.QtWidgets import  *
 from PyQt5 import QtWidgets, QtCore
-from ..components.mosfet import MOSFET
+from ..components.mosfet.base_mosfet import MOSFET
 from ..topology.buck import BUCK
 from ..data.database import component_session
 from PyQt5.QtChart import QChart, QChartView, QPieSeries
 from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import Qt
-from power_toys.components.inductor import Inductor
+from power_toys.components.inductor.coilcraft import Coilcraft as Inductor
 
 class MainWindow(QMainWindow,Ui_MainWindow):
     def __init__(self, parent=None):

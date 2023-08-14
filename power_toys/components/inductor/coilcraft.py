@@ -6,7 +6,7 @@ from scipy.interpolate import griddata
 import torch
 import torch.nn as nn
 import joblib
-from .BaseComponent import BaseComponent
+from .base_inductor import BaseInductor
 
 class Net(nn.Module):
     def __init__(self):
@@ -21,15 +21,20 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
     
-class Inductor(BaseComponent):
+class Coilcraft(BaseInductor):
     def __init__(self,id) -> None:
+        super().__init__()
         self.id = id
-        self.load_loss_model()
+        self._model = None
         self.dc_loss = 0
         self.ac_loss = 0
         self.temp = 0
         self.N_series = 1
-
+    
+    @property
+    def loss_list(self):
+        return ['loss_ac','loss_dc']
+        
     def series_connect(self,N):
         self.N_series = N
         return self
@@ -75,25 +80,29 @@ class Inductor(BaseComponent):
         data = self.model['DCRTyp']
         return data*self.N_series
 
-    def load_loss_model(self):
-        if(os.path.exists(self.loss_model_file)):
-            with open(self.loss_model_file,'r') as f:
-                model = json.load(f)
-            self.model = model
-        else:
-            print("Model not found")
-            self.model = None
+    @property
+    def model(self):
+        # 懒加载获取电感的模型
+        if(self._model is None):
+            if(os.path.exists(self.loss_model_file)):
+                with open(self.loss_model_file,'r') as f:
+                    model = json.load(f)
+                self._model = model
+            else:
+                print("Model not found")
+                self._model = None
+        return self._model
 
     @classmethod
     def list_all(cls):
         __root__ = os.path.dirname(__file__)
-        result = os.listdir(__root__+"/../data/coilcraft_model")
+        result = os.listdir(__root__+"/../../data/model")
         return [x[:-4] for x in result]
 
     @property
     def loss_model_file(self):
         __root__ = os.path.dirname(__file__)
-        return __root__+f"/../data/coilcraft_model/{self.id}.txt"
+        return __root__+f"/../../data/coilcraft_model/{self.id}.txt"
     
     def get_loss(self,dc,ac_lower,ac_upper,freq_lower,freq_upper,calc_type):
         """计算损耗
@@ -224,12 +233,12 @@ class Inductor(BaseComponent):
         """
         # 加载模型
         model = Net()
-        model.load_state_dict(torch.load(f'{os.path.dirname(__file__)}/../data/trained_model/coilcraft/{self.id}.pth'))
+        model.load_state_dict(torch.load(f'{os.path.dirname(__file__)}/../../data/trained_model/coilcraft/{self.id}.pth'))
         model.eval()
         input_new = np.array([[dc,ac,freq/1e6]])
 
-        X_scaler = joblib.load(f"{os.path.dirname(__file__)}/../data/scaler/coilcraft/{self.id}_x_scaler.pkl")
-        y_scaler = joblib.load(f"{os.path.dirname(__file__)}/../data/scaler/coilcraft/{self.id}_y_scaler.pkl")
+        X_scaler = joblib.load(f"{os.path.dirname(__file__)}/../../data/scaler/coilcraft/{self.id}_x_scaler.pkl")
+        y_scaler = joblib.load(f"{os.path.dirname(__file__)}/../../data/scaler/coilcraft/{self.id}_y_scaler.pkl")
 
         new_scaled = X_scaler.transform(input_new)
         inputs = torch.from_numpy(new_scaled).float()
@@ -255,7 +264,7 @@ class Inductor(BaseComponent):
     def temperature(self):
         idc = self.circuit_param('iave')
         iac = self.circuit_param('iripple')
-        fs = self.circuit_param('feq')
+        fs = self.circuit_param('fs')
         return self.predict_AI(idc,iac,fs)[2]
 
     def __str__(self) -> str:

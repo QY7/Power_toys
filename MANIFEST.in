@@ -1,1 +1,1 @@
-recursive-include power_toys *.db *.txt
+recursive-include power_toys *.db *.txt *.pth *.pkl

@@ -8,16 +8,18 @@ import numpy as np
 import sqlite3 as sq
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String,Float
-from ..data.database import component_session,component_engine
+from ...data.database import component_session,component_engine
 import pandas as pd
 from sqlalchemy.sql import select, text
-from ..components.BaseComponent import BaseComponent
-from ..common.const import *
+from ..Base import BaseComponent
+from ...common.const import *
+import copy
 
-Base = declarative_base()
+DBBase = declarative_base()
 
-class MOSFET(Base,BaseComponent):
+class MOSFET(DBBase,BaseComponent):
     __tablename__ = 'MOSFET'
+
     id      = Column(String, primary_key=True)
     rdson   = Column(Float)
     vbr     = Column(Float)
@@ -38,6 +40,7 @@ class MOSFET(Base,BaseComponent):
     footprint = Column(String(50))
     
     def __init__(self,**kwargs) -> None:
+        super().__init__()
         for key in mosfet_param_list.keys():
             setattr(self, key, None)
         for key, value in kwargs.items():
@@ -46,28 +49,24 @@ class MOSFET(Base,BaseComponent):
             except:
                 value = value
             setattr(self, key.lower(), value)
+    
+    @property
+    def loss_list(self):
+        return ['con_loss','dri_loss','cap_loss','switch_off_loss','switch_on_loss','qrr_loss']
 
     def parallel(self,N=2):
-        return MOSFET(
-            id=f"{self.id}_p{N}",
-            rdson   = self.rdson/N,
-            vbr     = self.vbr,
-            vgsth   = self.vgsth,
-            rg      = self.rg/N,
-            qg      = N*self.qg,
-            qgd     = N*self.qgd,
-            qg_soft = N*self.qg_soft,
-            cosse   = N*self.cosse,
-            cosst   = N*self.cosst,
-            qrr     = N*self.qrr,
-            qgs2    = N*self.qgs2,
-            vplateau= self.vplateau,
-            kdyn    = self.kdyn,
-            ktemp   = self.ktemp,
-            vgs     = self.vgs,
-            vgs_min = self.vgs_min,
-            footprint = self.footprint
-        )
+        mos_tmp = copy.deepcopy(self)
+        mos_tmp.rdson   = self.rdson/N
+        # 假定并联使用不同的驱动器
+        mos_tmp.rg      = self.rg
+        mos_tmp.qg      = N*self.qg
+        mos_tmp.qgd     = N*self.qgd
+        mos_tmp.qg_soft = N*self.qg_soft
+        mos_tmp.cosse   = N*self.cosse
+        mos_tmp.cosst   = N*self.cosst
+        mos_tmp.qrr     = N*self.qrr
+        mos_tmp.qgs2    = N*self.qgs2
+        return mos_tmp
 
     def mos_in_series(self,rdson):
         """获取同系列的mos的推测参数，根据FoM参数来
@@ -110,8 +109,9 @@ class MOSFET(Base,BaseComponent):
             MOSFET: MOSFET的实例
         """
         mosfet = component_session.query(MOSFET).filter_by(id=_id).first()
-        return mosfet
+        return copy.deepcopy(mosfet)
     
+# TODO 如果mos是深拷贝出来的，可能会有BUG
     def save_to_db(self):
         """如果已经存在，就返回已经存在的数据，否则保存数据
         """
@@ -149,13 +149,13 @@ class MOSFET(Base,BaseComponent):
         """
         return self.cosse*self.rdson*self.kdyn*self.ktemp
     
-    @staticmethod
-    def get_FoM(vds,kind='si',vgs = '5V'):
-        kind = kind.lower().strip()
-        FoM = json.load()
-        for v in FoM[kind].keys():
-            if(int(v)>=vds):
-                return FoM[kind][v][vgs]
+    # @staticmethod
+    # def get_FoM(vds,kind='si',vgs = '5V'):
+    #     kind = kind.lower().strip()
+    #     FoM = json.load()
+    #     for v in FoM[kind].keys():
+    #         if(int(v)>=vds):
+    #             return FoM[kind][v][vgs]
             
     def _con_loss(self,irms):
         """返回导通损耗
@@ -182,6 +182,7 @@ class MOSFET(Base,BaseComponent):
             [W]: 驱动损耗
         """
         return self.qg*(self.vgs-self.vgs_min)*fs
+        
 
     @property
     def dri_loss(self):
@@ -322,3 +323,41 @@ class MOSFET(Base,BaseComponent):
                     df.iloc[index:index+1].to_sql(table_name, con=component_engine, if_exists='append', index=False)
                 else:
                     print(f"{row['ID']} 已经存在")
+
+    @property
+    def opt_rdson(self):
+        """根据电路条件，通过二分法找最优的rdson
+
+        Args:
+            max_iter (int, optional): 最大的迭代次数. Defaults to 100.
+
+        Returns:
+            float: 优化的rdson
+        """
+        rdson_tmp = self.rdson
+        b,a = rdson_tmp/100,rdson_tmp*100
+        phi = (1 + 5**0.5) / 2  # 黄金比例
+        c = b - (b - a) / phi
+        d = a + (b - a) / phi
+        cnt_iter = 0
+        while abs(b - a) > 1e-6:
+            mos1_loss = self.mos_in_series(c).total_loss
+            mos2_loss = self.mos_in_series(d).total_loss
+            if mos1_loss < mos2_loss:
+                b = d
+            else:
+                a = c
+            c = b - (b - a) / phi
+            d = a + (b - a) / phi
+            cnt_iter += 1
+            if(cnt_iter > MAX_ITER_NUM):
+                print(f"{MAX_ITER_NUM}次迭代后，不收敛")
+                return (b + a) / 2
+        return (b + a) / 2
+    
+    @property
+    def vf(self):
+        """反向导通电压
+        """
+        return 0.7
+        

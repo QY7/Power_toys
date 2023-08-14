@@ -2,9 +2,10 @@ import numpy as np
 from power_toys.log import log_error
 from operator import methodcaller
 from math import pi
+from ..components.Base import BaseCircuit
+from ..common.const import DCX_COMPONENT,TWO_TER_TRANSFORMER
 
-
-class DCX():
+class DCX(BaseCircuit):
     PRIMARY_MOS = 'p'
     SECONDARY_MOS = 's'
     HALF_BRIDGE = 'H'
@@ -24,117 +25,125 @@ class DCX():
                  topology_p = HALF_BRIDGE,
                  topology_s = CENTER_TAPE
         ) -> None:
+
+        super().__init__()
         self.topology_p = topology_p
         self.topology_s = topology_s
         self.vin = vin
         self.vo = vo
         self.n_t = n_t
-        self.fs = fs
-        self.q_p = q_p
-        self.q_s = q_s
+        self.set_fs(fs)
         self.td = td
         self.po = po
+
+        if(topology_p == DCX.HALF_BRIDGE or topology_p == DCX.CENTER_TAPE):
+            # 半桥或者是中抽，管子数量为2
+            self.register_component(q_p,DCX_COMPONENT.PRIMARY_MOS,2)
+        elif(topology_p == DCX.FULL_BRIDGE):
+            # 全桥管子数量为4
+            self.register_component(q_p,DCX_COMPONENT.PRIMARY_MOS,4)
+
+        if(topology_s == DCX.HALF_BRIDGE or topology_s == DCX.CENTER_TAPE):
+            # 半桥或者是中抽，管子数量为2
+            self.register_component(q_s,DCX_COMPONENT.SECONDARY_MOS,2)
+        elif(topology_s == DCX.FULL_BRIDGE):
+            # 全桥管子数量为4
+            self.register_component(q_s,DCX_COMPONENT.SECONDARY_MOS,4)
+
         self.transformer = transformer
 
     @property
-    def ts(self):
-        return self._ts
+    def mos_p(self):
+        return self.get_component(DCX_COMPONENT.PRIMARY_MOS)
     
-    @ts.setter
-    def ts(self,value):
-        self._ts = value
-        self._fs = 1/value
-
     @property
-    def fs(self):
-        return self._fs
+    def mos_s(self):
+        return self.get_component(DCX_COMPONENT.SECONDARY_MOS)
     
-    @fs.setter
-    def fs(self,value):
-        self._fs = value
-        self._ts = 1/value
+    def irms(self,c_index,subcomponent_idx=None):
+        """返回元件的电流
 
-    @property
-    def po(self):
-        return self._po
-    
-    @po.setter
-    def po(self,value):
-        self._ro = np.power(self.vo,2)/value
-        self._po = value
+        Args:
+            c_index (int): 元件的index
+            subcomponent_idx (int, optional): 元件的子index，比如变压器的rms电流就可能有原边和副边的不同电流. Defaults to None.
 
-    @property
-    def ro(self):
-        return self._ro
-    
-    @ro.setter
-    def ro(self,value):
-        self._ro = value
-        self._po = np.power(self.vo,2)/value
-
-    def rms_current(self,q_index):
+        Returns:
+            float: rms电流大小
+        """
         Ts = self.ts
         td = self.td
         Po = self.po
-        if(q_index == DCX.PRIMARY_MOS):
+
+        if( c_index == DCX_COMPONENT.PRIMARY_MOS \
+            or (c_index == DCX_COMPONENT.TRANSFORMER \
+            and subcomponent_idx == TWO_TER_TRANSFORMER.PRIMARY_WINDING)):
             topology = self.topology_p
-            mos = self.q_p
+            mos = self.get_component(DCX_COMPONENT.PRIMARY_MOS)
             vs = self.vin
-        else:
+        elif(c_index == DCX_COMPONENT.SECONDARY_MOS \
+            or (c_index == DCX_COMPONENT.TRANSFORMER \
+            and subcomponent_idx == TWO_TER_TRANSFORMER.SECONDARY_WINDING)):
             topology = self.topology_s
-            mos = self.q_s
+            mos = self.get_component(DCX_COMPONENT.SECONDARY_MOS)
             vs = self.vo
-        
+        else:
+            print("invalid c_index for dcx")
+                
         if topology == 'F' or topology == 'H':
             ilm = 2*mos.cosst**vs/td
             if topology == 'F':
-                Ipower_p = Po*pi*Ts/(2*vs*(Ts-2*td))
+                Ipower = Po*pi*Ts/(2*vs*(Ts-2*td))
             else:
-                Ipower_p = Po*pi*Ts/(vs*(Ts-2*td))
+                Ipower = Po*pi*Ts/(vs*(Ts-2*td))
         else:
             ilm = 2*(mos.cosst)*2*vs/td
-            Ipower_p = Po*pi*Ts/(2*vs*(Ts-2*td))
+            Ipower = Po*pi*Ts/(2*vs*(Ts-2*td))
         
-        if(q_index == DCX.PRIMARY_MOS or q_index == DCX.SECONDARY_MOS):
+        if(c_index == DCX_COMPONENT.PRIMARY_MOS or c_index == DCX_COMPONENT.SECONDARY_MOS):
             # 如果是计算管子的rms，那么不需要加上死区时间的电流有效值
-            rms = ((Ipower_p**2)/2 + (ilm**2)/3)*(Ts-2*td)/Ts
+            rms = ((Ipower**2)/2 + (ilm**2)/3)*(Ts-2*td)/Ts
+            return np.sqrt(rms/2)
         else:
             # 如果是计算变压器的rms，那么需要加上死区时间的电流有效值
-            rms = ((Ipower_p**2)/2 + (Ipower_p**2)/3)*(Ts-2*td)/Ts + Ipower_p**2*2*td/Ts
-        return np.sqrt(rms)
+            rms = ((Ipower**2)/2 + (Ipower**2)/3)*(Ts-2*td)/Ts + Ipower**2*2*td/Ts
+            return np.sqrt(rms)
     
-    def p_dri(self,q_index):
-        if(q_index == DCX.PRIMARY_MOS):
-            topology = self.topology_p
+    def off_current(self,c_index):
+        if(c_index == DCX_COMPONENT.PRIMARY_MOS):
+            return self.ilm
         else:
-            topology = self.topology_s
-        mos = getattr(self,f"q_{q_index}")
+            return 0
 
-        if(topology == DCX.FULL_BRIDGE):
-            return mos.dri_loss(self.fs)*4
-        else:
-            return mos.dri_loss(self.fs)*2 
+    def on_current(self,c_index):
+        return 0
+    
+    def off_voltage(self,c_index):
+        return 0
+
+    def on_voltage(self,c_index):
+        return 0
+
+    def cap_voltage(self,c_index):
+        return 0
+    
+    def qrr_voltage(self,c_index):
+        return 0
         
-    def p_con(self,q_index):
-        mos = getattr(self,f"q_{q_index}")
-        if(q_index == DCX.PRIMARY_MOS):
+    @property
+    def ts(self):
+        return 1/self._fs
+
+    def fs(self,c_index):
+        return self._fs
+        
+    def ilm(self,c_index):
+        if(c_index == DCX.PRIMARY_MOS):
             topology = self.topology_p
-        else:
-            topology = self.topology_s
-        
-        if(topology == DCX.FULL_BRIDGE):
-            return mos.con_loss(self.rms_current(q_index))*2
-        else:
-            return mos.con_loss(self.rms_current(q_index))*1
-        
-    def ilm(self,q_index):
-        if(q_index == DCX.PRIMARY_MOS):
-            topology = self.topology_p
-            mos = self.q_p
+            mos = self.mos_p
             vs = self.vin
         else:
             topology = self.topology_s
-            mos = self.q_s
+            mos = self.mos_s
             vs = self.vo
         
         if topology == 'F' or topology == 'H':
@@ -149,15 +158,3 @@ class DCX():
         # 副边电流折算到原边要除以匝比
         ilm_total = self.ilm(DCX.PRIMARY_MOS)+self.ilm(DCX.SECONDARY_MOS)/self.n_t
         return self.vo*(self.ts-2*self.td)/2/ilm_total
-    
-    def p_total(self):
-        mos_idx_list = [DCX.PRIMARY_MOS,DCX.SECONDARY_MOS]
-        loss_list = ["p_con","p_dri"]
-        loss_total = 0
-        for mos_idx in mos_idx_list:
-            for loss_name in loss_list:
-                loss_total += methodcaller(loss_name,mos_idx)(self)
-        return loss_total
-    
-    def efficiency(self):
-        return self.po/(self.po+self.p_total())

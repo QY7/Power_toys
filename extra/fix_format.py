@@ -1,4 +1,4 @@
-from power_toys.components.mosfet import MOSFET
+from power_toys.components.mosfet.base_mosfet import MOSFET
 from power_toys.data.database import component_session
 from power_toys.model_params import mosfet_param_list
 

@@ -1,7 +1,7 @@
 import  sys
 from PyQt5.QtWidgets import  *
 from ..gui.ui.ui_mosfet_database_gui import Ui_MainWindow
-from ..components.mosfet import MOSFET
+from ..components.mosfet.base_mosfet import MOSFET
 from ..model_params import mosfet_param_list
 from ..data.database import component_session
 import sqlalchemy
